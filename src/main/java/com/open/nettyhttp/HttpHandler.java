@@ -62,7 +62,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
             // 模拟事务处理
             TimeUnit.SECONDS.sleep(1);
             String content = "你访问的是： " + uri;
-            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
+            FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes("UTF-8")));
             response.headers().set(CONTENT_TYPE, "text/plain");
             response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
 
