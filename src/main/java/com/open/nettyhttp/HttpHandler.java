@@ -8,9 +8,7 @@ import io.netty.handler.codec.http.*;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -19,6 +17,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
 
     private static final byte[] CONTENT = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'};
     private boolean keepAlive;
+    private String uri;
 
     public HttpHandler() {
         super();
@@ -54,7 +53,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
             if (HttpHeaders.is100ContinueExpected(request)) {
                 ctx.write(new DefaultFullHttpResponse(HTTP_1_1, CONTINUE));
             }
-
+            uri = request.uri();
             keepAlive = HttpHeaders.isKeepAlive(request);
         }
 
@@ -62,8 +61,7 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
 
             // 模拟事务处理
             TimeUnit.SECONDS.sleep(1);
-            HttpRequest request = (HttpRequest) msg;
-            String content = "你访问的是： " + request.uri().getBytes();
+            String content = "你访问的是： " + uri;
             FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(content.getBytes()));
             response.headers().set(CONTENT_TYPE, "text/plain");
             response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
