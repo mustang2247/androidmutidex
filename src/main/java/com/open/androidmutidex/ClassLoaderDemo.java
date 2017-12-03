@@ -3,6 +3,11 @@ package com.open.androidmutidex;
 import java.util.ArrayList;
 
 public class ClassLoaderDemo {
+
+    static {
+        System.out.println("ClassLoaderDemo is load!");
+    }
+
     public static void main(String[] args){
         Class mainClass = ClassLoaderDemo.class;
         ClassLoader mainLoadder = mainClass.getClassLoader();
